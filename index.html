@@ -667,7 +667,8 @@ function opening() {
   tl.from(splitWords(en), { y: -14, opacity: 0, filter: 'blur(6px)', duration: 1.1, stagger: .08 }, '-=.8');
   tl.add(() => en.classList.add('lit'), '-=.3');
   tl.from('.epi small', { opacity: 0, duration: .8 }, '<');
-  tl.from(splitLines(document.getElementById('hero-h1')), { yPercent: 110, duration: 1.15, ease: 'expo.out', stagger: .11 }, .5);
+  const h1 = document.getElementById('hero-h1'), h1orig = h1.innerHTML;  /* after the reveal, put the plain text back so it rewraps on resize */
+  tl.from(splitLines(h1), { yPercent: 110, duration: 1.15, ease: 'expo.out', stagger: .11, onComplete: () => { h1.innerHTML = h1orig; } }, .5);
   tl.from('.h-copy [data-rv]', { y: 22, opacity: 0, duration: .9, stagger: .09 }, '-=.7');
   tl.from('#hero-sky', { opacity: 0, scale: .94, duration: 1.6, ease: 'power2.out' }, .3);
   gsap.to('#hero-sky', { yPercent: 14, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
@@ -677,7 +678,7 @@ function opening() {
 function reveals() {
   if (!G) return;
   document.querySelectorAll('section:not(.hero) [data-rv]').forEach(el => gsap.from(el, { y: 26, opacity: 0, duration: .9, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } }));
-  document.querySelectorAll('[data-split]').forEach(h => { const lines = splitLines(h); gsap.from(lines, { yPercent: 110, duration: 1.1, ease: 'expo.out', stagger: .1, scrollTrigger: { trigger: h, start: 'top 85%', once: true } }); });
+  document.querySelectorAll('[data-split]').forEach(h => { const orig = h.innerHTML, lines = splitLines(h); gsap.from(lines, { yPercent: 110, duration: 1.1, ease: 'expo.out', stagger: .1, onComplete: () => { h.innerHTML = orig; }, scrollTrigger: { trigger: h, start: 'top 85%', once: true } }); });
   document.querySelectorAll('[data-count]').forEach(el => {
     const end = +el.dataset.count, o = { v: 0 };
     gsap.to(o, { v: end, duration: 1.6, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 90%', once: true }, onUpdate: () => el.textContent = Math.round(o.v).toLocaleString('en-US') });
