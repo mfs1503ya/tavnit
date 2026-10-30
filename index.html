@@ -1,0 +1,1040 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tavnit Bible</title>
+<meta name="description" content="Tavnit is an app in development that draws every passage of the Bible as a map: its refrains, mirrors and threads, in a daily devotional you can read in three minutes.">
+<meta name="theme-color" content="#15100E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Tavnit · See the pattern inside the Bible">
+<meta property="og:description" content="Every passage of the Bible drawn as a map: its refrains, mirrors and threads. A three-minute daily devotional, coming soon.">
+<meta property="og:image" content="https://tavnit.app/og.png">
+<meta property="og:url" content="https://tavnit.app/">
+<link rel="canonical" href="https://tavnit.app/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2315100E'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%23E2604A' stroke-width='3'/%3E%3Ccircle cx='32' cy='32' r='11' fill='none' stroke='%23D2BE95' stroke-width='2.5'/%3E%3Ccircle cx='32' cy='13' r='4' fill='%23FFD9CC'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/fonts.css">
+<style>
+/* Layout: one long scroll on warm ink; a single red thread (the rubric of red-letter Bibles) is stitched through the page from the hero to the app */
+:root {
+  --ink: #15100E;
+  --ink-2: #1E1714;
+  --ink-3: #2A201B;
+  --rule: #3A2E27;
+  --vellum: #EEE4D2;
+  --dust: #A99D8A;
+  --rubric: #E2604A;
+  --rubric-soft: #B9483A;
+  --linen: #D2BE95;
+  --display: "Libre Caslon Display", "Big Caslon", "Iowan Old Style", Georgia, serif;
+  --serif: "Libre Caslon Text", "Iowan Old Style", Georgia, serif;
+  --ui: "Hanken Grotesk", "Segoe UI", system-ui, sans-serif;
+  --hebrew: "Frank Ruhl Libre", "Times New Roman", serif;
+  --measure: 60ch;
+  --ease: cubic-bezier(.2, .7, .1, 1);
+  color-scheme: dark;
+}
+@property --ga { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+* { box-sizing: border-box; }
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+body { margin: 0; background: var(--ink); color: var(--vellum); font-family: var(--ui); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 60; background: var(--ink); }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--rubric); outline-offset: 3px; border-radius: 4px; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); position: relative; }
+h1, h2, h3 { font-family: var(--display); font-weight: 400; line-height: 1.04; text-wrap: balance; margin: 0; }
+h1 em, h2 em, h3 em { font-family: var(--serif); font-style: italic; color: var(--rubric); }
+.eyebrow { font: 600 12px/1 var(--ui); letter-spacing: 0.24em; text-transform: uppercase; color: var(--linen); }
+.lede { color: var(--dust); max-width: var(--measure); font-size: 18px; }
+.btn { position: relative; display: inline-flex; align-items: center; gap: 8px; padding: 13px 22px; border-radius: 999px; font: 500 15px/1 var(--ui); text-decoration: none; border: 1px solid var(--rule); background: transparent; color: var(--vellum); cursor: pointer; transition: border-color .3s, background .3s, transform .3s var(--ease); }
+.btn:hover { border-color: var(--rubric-soft); transform: translateY(-1px); }
+.btn.primary { background: var(--rubric); color: #1A0D0A; border-color: var(--rubric); font-weight: 600; }
+.btn.primary:hover { background: #EC7660; }
+.glow::before { content: ""; position: absolute; inset: -2px; border-radius: inherit; padding: 1.5px; background: conic-gradient(from var(--ga), transparent 0 68%, #FFD2C4 82%, transparent 95%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); animation: spin-ga 4s linear infinite; pointer-events: none; }
+@keyframes spin-ga { to { --ga: 360deg; } }
+section { position: relative; z-index: 2; padding-block: 110px; }
+@media (max-width: 700px) { section { padding-block: 70px; } }
+.sec-title { font-size: clamp(42px, 5.6vw, 72px); margin-top: 14px; }
+
+/* atmosphere */
+#aura { position: fixed; inset: -20vmax; z-index: 0; pointer-events: none; background:
+  radial-gradient(36vmax 28vmax at 20% 16%, rgba(178, 64, 44, 0.20), transparent 70%),
+  radial-gradient(30vmax 24vmax at 82% 30%, rgba(210, 190, 149, 0.08), transparent 70%),
+  radial-gradient(40vmax 30vmax at 50% 92%, rgba(120, 40, 34, 0.18), transparent 70%);
+  animation: drift 40s ease-in-out infinite alternate; }
+@keyframes drift { to { transform: translate3d(-4vmax, 3vmax, 0) rotate(7deg); } }
+#grain { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: .06; background-image: radial-gradient(rgba(255,255,255,.7) 1px, transparent 1px); background-size: 3px 3px; }
+#thread { position: absolute; left: 0; top: 0; width: 100%; z-index: 3; pointer-events: none; overflow: visible; }
+#thread path { fill: none; stroke: var(--rubric); stroke-width: 2; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(226, 96, 74, .8)); }
+#thread circle { fill: #FFD9CC; filter: drop-shadow(0 0 10px rgba(255, 140, 110, 1)); }
+
+/* header */
+header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50; background: rgba(21, 16, 14, 0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--rule); }
+header.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px; }
+.mark { font: 400 30px/1 var(--display); text-decoration: none; letter-spacing: 0.02em; display: inline-flex; align-items: baseline; gap: 2px; }
+.mark i { font-family: var(--serif); color: var(--rubric); }
+nav.links { display: flex; gap: 24px; font-size: 14px; }
+nav.links a { text-decoration: none; color: var(--dust); transition: color .2s; }
+nav.links a:hover { color: var(--vellum); }
+@media (max-width: 860px) { nav.links { display: none; } }
+
+/* hero */
+.hero { padding-block: 76px 100px; }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: 48px; align-items: center; }
+@media (max-width: 900px) { .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; } }
+.epi { margin: 0 0 30px; display: flex; flex-direction: column; gap: 6px; }
+.epi .he { font-family: var(--hebrew); font-size: 32px; color: var(--linen); direction: rtl; text-align: left; }
+.epi .en { font: italic 400 19px/1.4 var(--serif); color: var(--dust); }
+.epi .en .hl { color: var(--dust); transition: color 1.2s, text-shadow 1.2s; }
+.epi .en.lit .hl { color: var(--rubric); text-shadow: 0 0 18px rgba(226, 96, 74, .65); }
+.epi small { font: 500 12px var(--ui); letter-spacing: .16em; text-transform: uppercase; color: var(--dust); }
+.w { display: inline-block; will-change: transform, opacity, filter; }
+.line-mask { display: block; overflow: hidden; padding-bottom: .06em; }
+.line-mask > span { display: block; }
+.hero h1 { font-size: clamp(50px, 7.4vw, 92px); }
+.hero .lede { margin: 24px 0 32px; }
+.cta-row { display: flex; flex-wrap: wrap; gap: 12px; }
+.mini-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 30px; max-width: 520px; }
+.mini { border: 1px solid var(--rule); border-radius: 16px; padding: 16px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; background: rgba(30, 23, 20, .7); transition: border-color .3s, transform .3s var(--ease); }
+.mini b { font: 400 23px var(--display); }
+.mini span { font-size: 13px; color: var(--dust); }
+.mini:hover { border-color: var(--rubric-soft); transform: translateY(-2px); }
+.sky { position: relative; aspect-ratio: 1 / 1; max-width: 100%; margin: 0; }
+.sky canvas { width: 100%; height: 100%; display: block; }
+.sky figcaption { position: absolute; left: 0; right: 0; bottom: 4px; text-align: center; font: 500 12px var(--ui); letter-spacing: .16em; text-transform: uppercase; color: var(--dust); }
+.join { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; max-width: 520px; }
+.join label { width: 100%; font-size: 14px; color: var(--dust); }
+.join input { flex: 1 1 220px; min-width: 0; padding: 13px 18px; border-radius: 999px; border: 1px solid var(--rule); background: var(--ink-2); color: var(--vellum); font: 15px var(--ui); }
+.join input::placeholder { color: #7D7163; }
+.join .note { width: 100%; font-size: 13px; color: var(--dust); min-height: 1.2em; margin: 0; }
+.join .note.ok { color: var(--rubric); }
+.join .consent { width: 100%; margin: 0; font-size: 12.5px; color: #8E8272; }
+.join .consent a { color: var(--dust); }
+html.founders-closed [data-founders="open"], html:not(.founders-closed) [data-founders="closed"] { display: none !important; }
+
+/* try */
+.try-grid { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 60px; align-items: start; margin-top: 48px; }
+@media (max-width: 900px) { .try-grid { grid-template-columns: minmax(0, 1fr); } }
+.phone-holder { position: sticky; top: 96px; }
+@media (max-width: 900px) { .phone-holder { position: relative; top: 0; } }
+.phone { width: min(340px, 100%); aspect-ratio: 9 / 18.5; border-radius: 46px; border: 1px solid var(--rule); background: #0F0B0A; padding: 13px; margin-inline: auto; box-shadow: 0 40px 90px rgba(0, 0, 0, .55); animation: bob 7s ease-in-out infinite; transition: box-shadow 1s; }
+.phone.landed { box-shadow: 0 40px 90px rgba(0, 0, 0, .55), 0 0 0 1px rgba(226, 96, 74, .7), 0 0 60px rgba(226, 96, 74, .25); }
+@keyframes bob { 50% { transform: translateY(-8px); } }
+.screen { height: 100%; border-radius: 34px; background: radial-gradient(120% 80% at 50% 25%, #2B1D18 0%, #1A1311 55%, #120D0C 100%); overflow: hidden; position: relative; display: flex; flex-direction: column; }
+.screen-top { display: flex; justify-content: space-between; padding: 16px 20px 6px; font: 600 10px var(--ui); color: var(--dust); letter-spacing: .16em; text-transform: uppercase; }
+.view { flex: 1; padding: 6px 20px 18px; display: flex; flex-direction: column; gap: 10px; animation: vin .5s var(--ease); }
+@keyframes vin { from { opacity: 0; transform: translateY(10px); } }
+.view[hidden] { display: none !important; }
+.view h4 { margin: 0; font: 400 25px/1.1 var(--display); }
+.view p { margin: 0; font-size: 13px; color: var(--dust); }
+.view .q { font: italic 400 16px/1.4 var(--serif); color: var(--vellum); }
+.view svg { width: 100%; height: auto; }
+.chip { align-self: flex-start; font: 600 10px var(--ui); letter-spacing: .14em; text-transform: uppercase; color: var(--rubric); border: 1px solid rgba(226, 96, 74, .4); border-radius: 999px; padding: 4px 10px; }
+.tabbar { display: flex; justify-content: space-around; border-top: 1px solid var(--rule); padding: 10px 6px 14px; }
+.tabbar button { background: none; border: 0; color: var(--dust); font: 600 11px var(--ui); letter-spacing: .06em; cursor: pointer; padding: 6px 4px; }
+.tabbar button[aria-selected="true"] { color: var(--rubric); }
+.lens-word { font-family: var(--hebrew); font-size: 54px; color: var(--rubric); text-align: center; direction: rtl; }
+.answer { border: 1px solid var(--rule); border-radius: 14px; padding: 10px 12px; font-size: 13px; }
+.answer b { display: block; font: 600 10px var(--ui); letter-spacing: .14em; color: var(--linen); margin-bottom: 3px; }
+.answer i { font-family: var(--serif); font-size: 14px; }
+.features { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 600px) { .features { grid-template-columns: minmax(0, 1fr); } }
+.feature { text-align: left; border: 1px solid var(--rule); border-radius: 18px; padding: 22px; background: rgba(30, 23, 20, .75); color: var(--vellum); cursor: pointer; font: inherit; display: flex; flex-direction: column; gap: 6px; transition: border-color .3s, transform .35s var(--ease); text-decoration: none; }
+.feature:hover { transform: translateY(-3px); }
+.feature:hover, .feature[aria-pressed="true"] { border-color: var(--rubric-soft); }
+.feature .tag { font: 600 11px var(--ui); letter-spacing: .2em; text-transform: uppercase; color: var(--rubric); }
+.feature h3 { font-size: 27px; }
+.feature p { margin: 0; color: var(--dust); font-size: 15px; }
+.band { margin-top: 28px; border: 1px solid var(--rule); border-radius: 18px; padding: 22px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; background: linear-gradient(120deg, rgba(226, 96, 74, .1), transparent 60%); }
+.band p { margin: 0; font: 400 23px/1.2 var(--display); }
+
+/* bible grid */
+.stats { display: flex; flex-wrap: wrap; gap: 28px 60px; margin: 32px 0 36px; }
+.stat b { display: block; font: 400 58px/1 var(--display); font-variant-numeric: tabular-nums; }
+.stat span { color: var(--dust); font-size: 14px; }
+.bible { display: flex; flex-wrap: wrap; gap: 5px 10px; }
+.book-dots { display: flex; flex-wrap: wrap; gap: 3px; max-width: 160px; padding: 4px; border-radius: 6px; cursor: pointer; border: 1px solid transparent; background: none; }
+.book-dots:hover, .book-dots[aria-pressed="true"] { border-color: var(--rule); }
+.book-dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--linen); opacity: .8; display: block; }
+.book-dots.nt i { background: var(--rubric); }
+.bible.sweep .book-dots i { animation: lit .5s var(--ease) backwards; animation-delay: calc(var(--k) * 1.1ms); }
+@keyframes lit { from { opacity: 0; transform: scale(.2); } }
+.book-dots[aria-pressed="true"] i { opacity: 1; box-shadow: 0 0 8px currentColor; }
+.bible-read { margin-top: 18px; color: var(--dust); font-size: 15px; min-height: 1.6em; }
+.bible-read b { color: var(--vellum); font-weight: 500; }
+.fine { font-size: 13px; color: var(--dust); margin-top: 12px; }
+
+/* verses: 31,102 dots, from a galaxy to 66 sorted books to one woven design (sticky scroll stage) */
+.vx { position: relative; height: 340vh; }
+.vx-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+.vx canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.vx-beats { position: absolute; inset: 0; display: grid; padding: 0 20px; pointer-events: none; }
+.vx-beat { grid-area: 1 / 1; align-self: center; justify-self: center; text-align: center; max-width: 760px; opacity: 0; will-change: opacity, transform; }
+.vx-beat.low { align-self: end; padding-bottom: calc(8svh + 36px); }
+.vx-beat .eyebrow { display: block; margin-bottom: 16px; }
+.vx-beat:not(.low)::before { content: ""; position: absolute; inset: -90px -140px; z-index: -1; background: radial-gradient(closest-side, rgba(21,16,14,.82), rgba(21,16,14,.5) 55%, rgba(21,16,14,0)); }
+.vx-beat { position: relative; }
+.vx-beat h3 { font-size: clamp(34px, 5.4vw, 72px); text-shadow: 0 2px 30px rgba(21,16,14,.9), 0 0 6px rgba(21,16,14,.8); }
+.vx-beat h3 b { font-weight: 400; font-variant-numeric: tabular-nums; }
+.vx-beat p { margin: 12px auto 0; color: var(--dust); font-size: 16px; max-width: 46ch; text-shadow: 0 1px 14px rgba(21,16,14,.95); }
+.vx-note .sm { display: none; }
+.vx-note { position: absolute; left: 0; right: 0; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); text-align: center; font: 600 11px/1.5 var(--ui); letter-spacing: .2em; text-transform: uppercase; color: var(--dust); opacity: .75; padding: 0 20px; }
+@media (max-width: 860px) { .vx-beat.low { padding-bottom: calc(96px + 5svh); } .vx-beat p { font-size: 15px; } .vx-note { bottom: calc(92px + env(safe-area-inset-bottom, 0px)); } .vx-note .lg { display: none; } .vx-note .sm { display: inline; } }
+@media (prefers-reduced-motion: reduce) { .vx { height: auto; } .vx-stage { position: relative; height: 100svh; } .vx-beat { display: none; } .vx-beat.final { display: block; opacity: 1; } }
+
+/* app deep-dive */
+.dive { display: grid; margin-top: 44px; }
+.dive-item { display: grid; grid-template-columns: 70px minmax(0, 1fr) minmax(0, .9fr); gap: 28px; align-items: start; padding: 30px 0; border-top: 1px solid var(--rule); }
+@media (max-width: 860px) { .dive-item { grid-template-columns: minmax(0, 1fr); gap: 14px; } }
+.dive-item .n { font: 600 14px var(--ui); color: var(--rubric); letter-spacing: .14em; }
+.dive-item h3 { font-size: 36px; margin-bottom: 10px; }
+.dive-item p { margin: 0; color: var(--dust); }
+.demo { border: 1px solid var(--rule); border-radius: 18px; padding: 22px; background: rgba(30, 23, 20, .75); }
+.demo .big { font: 400 46px/1.05 var(--display); color: var(--rubric); }
+.demo .he { font-family: var(--hebrew); font-size: 42px; color: var(--rubric); direction: rtl; }
+.demo .q { font: italic 400 20px/1.35 var(--serif); }
+details { margin-top: 14px; border-top: 1px solid var(--rule); padding-top: 12px; }
+summary { cursor: pointer; color: var(--vellum); font-weight: 500; }
+details p { margin-top: 8px !important; }
+
+/* support */
+.support-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; margin-top: 44px; }
+@media (max-width: 860px) { .support-grid { grid-template-columns: minmax(0, 1fr); } }
+.give { border: 1px solid var(--rule); border-radius: 22px; padding: 30px; background: rgba(30, 23, 20, .82); }
+.give h3 { font-size: 38px; margin-bottom: 8px; }
+.give ul { padding-left: 18px; color: var(--dust); margin: 14px 0; }
+.tiers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 18px 0; }
+.tier { padding: 14px 6px; border-radius: 14px; border: 1px solid var(--rule); background: var(--ink-3); color: var(--vellum); font: 400 21px var(--display); cursor: pointer; font-variant-numeric: tabular-nums; transition: border-color .25s, color .25s; }
+.tier[aria-pressed="true"] { border-color: var(--rubric); color: var(--rubric); }
+.perk { font-size: 14px; color: var(--rubric); min-height: 1.4em; margin: 0 0 14px; }
+blockquote { margin: 28px 0 0; padding-left: 18px; border-left: 2px solid var(--rubric-soft); font: italic 400 20px/1.4 var(--serif); }
+blockquote cite { display: block; font: 600 11px var(--ui); color: var(--dust); margin-top: 8px; letter-spacing: .16em; font-style: normal; }
+.lights { position: relative; border: 1px solid var(--rule); border-radius: 22px; overflow: hidden; min-height: 300px; background: #120D0C; }
+.lights canvas { width: 100%; height: 100%; position: absolute; inset: 0; }
+.lights div { position: relative; padding: 26px; }
+.lights h3 { font-size: 32px; }
+
+/* books */
+.books-sec { overflow: hidden; }
+.shelf { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(230px, 1fr); gap: 22px; overflow-x: auto; padding: 30px 6px 18px; margin-top: 34px; scroll-snap-type: x mandatory; perspective: 1400px; }
+.vol { scroll-snap-align: start; display: flex; flex-direction: column; gap: 16px; }
+.book3d { --ry: -22deg; position: relative; width: 180px; aspect-ratio: 2 / 3; margin-inline: auto; transform-style: preserve-3d; transform: rotateY(var(--ry)) rotateX(4deg); transition: transform .9s var(--ease); }
+.vol:hover .book3d { transform: rotateY(-32deg) rotateX(4deg) translateY(-6px); }
+.book3d .front { position: absolute; inset: 0; border-radius: 3px 8px 8px 3px; background: radial-gradient(90% 70% at 50% 30%, #3A231C 0%, #1D1412 75%); border: 1px solid rgba(210, 190, 149, .25); padding: 16px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 30px 50px -20px rgba(0, 0, 0, .9); transform: translateZ(14px); overflow: hidden; }
+.book3d .front::after { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 35%, rgba(255, 230, 210, .14) 50%, transparent 65%); background-size: 250% 100%; background-position: 120% 0; transition: background-position 1.2s var(--ease); }
+.vol:hover .book3d .front::after { background-position: -40% 0; }
+.book3d .spine { position: absolute; top: 0; left: 0; width: 28px; height: 100%; background: linear-gradient(90deg, #2A1A15, #3A241D); transform-origin: left; transform: rotateY(-90deg) translateX(-14px); border-radius: 3px 0 0 3px; }
+.book3d small { font: 600 9px var(--ui); letter-spacing: .2em; color: var(--linen); text-transform: uppercase; position: relative; }
+.book3d b { font: 400 24px/1.05 var(--display); position: relative; }
+.book3d svg { width: 100%; height: auto; position: relative; }
+.vol .body { display: flex; flex-direction: column; gap: 6px; padding: 0 6px; }
+.vol .body p { margin: 0; font-size: 14px; color: var(--dust); }
+.vol .inside { font: italic 400 17px/1.35 var(--serif); color: var(--vellum) !important; }
+.pillars { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 44px; }
+@media (max-width: 800px) { .pillars { grid-template-columns: minmax(0, 1fr); } }
+.pillar { border-top: 1px solid var(--rubric-soft); padding-top: 16px; }
+.pillar h3 { font-size: 27px; margin-bottom: 6px; }
+.pillar p { margin: 0; color: var(--dust); font-size: 15px; }
+
+/* faq + close */
+.faq { margin-top: 36px; max-width: 820px; }
+.faq details { padding-block: 18px; border-top: 1px solid var(--rule); margin: 0; }
+.faq summary { font: 400 23px var(--display); list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; color: var(--rubric); font-family: var(--ui); }
+.faq details[open] summary::after { content: "–"; }
+.faq p { color: var(--dust); max-width: var(--measure); }
+.close { overflow: hidden; }
+.close .glowfield { position: absolute; inset: -10% -10% auto; height: 120%; background: radial-gradient(40% 50% at 50% 60%, rgba(226, 96, 74, .18), transparent 70%); z-index: -1; }
+.close h2 { font-size: clamp(54px, 8vw, 104px); }
+footer { position: relative; z-index: 2; border-top: 1px solid var(--rule); padding-block: 36px 110px; color: var(--dust); font-size: 14px; }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; }
+.dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 55; display: none; gap: 10px; padding: 12px max(16px, env(safe-area-inset-right, 0px)) calc(12px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); background: rgba(21, 16, 14, .94); border-top: 1px solid var(--rule); }
+.dock .btn { flex: 1; justify-content: center; }
+@media (max-width: 700px) { .dock { display: flex; } }
+.rail { position: fixed; right: max(18px, env(safe-area-inset-right, 0px)); top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 12px; z-index: 40; }
+.rail a { font: 600 11px var(--ui); color: var(--dust); text-decoration: none; letter-spacing: .12em; text-align: right; transition: color .3s; }
+.rail a.on { color: var(--rubric); }
+@media (max-width: 1240px) { .rail { display: none; } }
+@media (prefers-reduced-motion: reduce) { #aura, .phone, .glow::before { animation: none; } .bible.sweep .book-dots i { animation: none; } }
+</style>
+</head>
+<body>
+
+<div id="aura" aria-hidden="true"></div>
+<div id="grain" aria-hidden="true"></div>
+
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="#top" aria-label="Tavnit home">Ta<i>v</i>nit</a>
+    <nav class="links" aria-label="Sections">
+      <a href="#try">Try it</a><a href="#bible">The Bible</a><a href="#app">The app</a><a href="#support">Build it</a><a href="#books">Books</a>
+    </nav>
+    <a class="btn primary glow" href="#join">Save your spot</a>
+  </div>
+</header>
+
+<nav class="rail" aria-label="Page index">
+  <a href="#try" data-rail="try">1 · Try it</a><a href="#bible" data-rail="bible">2 · The Bible</a><a href="#app" data-rail="app">3 · The app</a><a href="#support" data-rail="support">4 · Build it</a><a href="#books" data-rail="books">5 · Books</a>
+</nav>
+
+<main id="top" style="position:relative">
+  <svg id="thread" aria-hidden="true"><path id="thread-path" d=""/><circle id="thread-bead" r="4.5" cx="-20" cy="-20"/></svg>
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="h-copy">
+        <div class="epi">
+          <span class="he" lang="he">כִּי לְעוֹלָם חַסְדּוֹ</span>
+          <span class="en" id="epi-en">“His <span class="hl">loving devotion</span> endures <span class="hl">forever</span>.”</span>
+          <small>Psalm 136 · said 26 times</small>
+        </div>
+        <h1 id="hero-h1">See the <em>pattern</em> inside the Bible.</h1>
+        <p class="lede" data-rv>Tavnit, the app we are building, draws every passage as a map: the line that keeps returning, the story that folds on its center, the thread that runs from Genesis to Revelation. One map a day, a short reflection, a prayer. Three minutes.</p>
+        <div class="cta-row" data-rv>
+          <a class="btn primary glow" href="#try">Try the app, right here</a>
+          <a class="btn" href="#bible">See what’s inside</a>
+        </div>
+        <div class="mini-cards" data-rv>
+          <a class="mini" href="#join"><b>The app</b><span>In development · save your spot →</span></a>
+          <a class="mini" href="#books"><b>Five books</b><span>The shape of Scripture · coming soon →</span></a>
+        </div>
+        <form class="join" id="join" data-form="hero" novalidate data-rv>
+          <label for="email-hero">Be the first to know, and among the first to use the app.</label>
+          <input id="email-hero" type="email" name="email" placeholder="you@email.com" autocomplete="email" required>
+          <button class="btn primary" type="submit">Save my spot</button>
+          <p class="note" aria-live="polite"></p>
+          <p class="consent">About one short email a week while we build. Unsubscribe any time. <a href="legal.html#privacy">Privacy</a></p>
+        </form>
+      </div>
+      <figure class="sky" id="hero-sky">
+        <canvas id="hero-canvas" width="900" height="900" aria-label="Psalm 136 drawn as 26 knots tied on one red thread"></canvas>
+        <figcaption>Psalm 136 · 26 verses · one thread</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="try">
+    <div class="wrap">
+      <p class="eyebrow" data-rv>Try it</p>
+      <h2 class="sec-title" data-split>This is <em>the app</em> we are building.</h2>
+      <p class="lede" style="margin-top:14px" data-rv>Follow the thread down. Tap the cards or the phone: every screen is a real part of what we are building.</p>
+      <div class="try-grid">
+        <div class="phone-holder">
+          <div class="phone" id="phone" aria-label="App preview">
+            <div class="screen">
+              <div class="screen-top"><span id="screen-title">Today · day 12</span><span>Tavnit</span></div>
+              <div class="view" data-view="today">
+                <span class="chip">Daily map</span>
+                <h4>Psalm 136</h4>
+                <p>One line. 26 times.</p>
+                <svg viewBox="0 0 240 200" role="img" aria-label="Ring of 26 verses"><g id="ring-mini"></g></svg>
+                <p class="q">“His loving devotion endures forever.”</p>
+                <p>Reflection · one question · prayer</p>
+              </div>
+              <div class="view" data-view="map" hidden>
+                <span class="chip">Mirror · Genesis 6–9</span>
+                <h4>The flood folds on its center</h4>
+                <svg viewBox="0 0 240 230" role="img" aria-label="The flood story as a mirror with Genesis 8:1 at the center">
+                  <g fill="none" stroke="#E2604A" stroke-width="1.3">
+                    <path d="M20 18 Q120 18 120 115" opacity=".35"/><path d="M20 212 Q120 212 120 115" opacity=".35"/>
+                    <path d="M45 50 Q120 50 120 115" opacity=".6"/><path d="M45 180 Q120 180 120 115" opacity=".6"/>
+                    <path d="M70 82 Q120 82 120 115" opacity=".9"/><path d="M70 148 Q120 148 120 115" opacity=".9"/>
+                  </g>
+                  <circle cx="120" cy="115" r="6" fill="#FFD9CC"/>
+                  <g fill="#A99D8A" font-family="Hanken Grotesk, sans-serif" font-size="10">
+                    <text x="20" y="12">Noah’s sons · 6:10</text><text x="20" y="226">Noah’s sons · 9:18</text>
+                    <text x="45" y="44">Covenant · 6:18</text><text x="45" y="196">Covenant · 9:9</text>
+                    <text x="70" y="76">150 days · 7:24</text><text x="70" y="164">150 days · 8:3</text>
+                  </g>
+                  <text x="132" y="112" fill="#EEE4D2" font-family="Libre Caslon Text, serif" font-size="13">God remembered</text>
+                  <text x="132" y="128" fill="#EEE4D2" font-family="Libre Caslon Text, serif" font-size="13">Noah · 8:1</text>
+                </svg>
+                <p>Structure after G. Wenham (1978). Every map names its source.</p>
+              </div>
+              <div class="view" data-view="thread" hidden>
+                <span class="chip">Thread · 7-day plan</span>
+                <h4>The lamb</h4>
+                <svg viewBox="0 0 240 150" role="img" aria-label="A thread from Genesis 22 to Revelation 5">
+                  <line x1="8" y1="110" x2="232" y2="110" stroke="#3A2E27"/>
+                  <g fill="none" stroke="#E2604A" stroke-width="1.4"><path d="M14 110 Q20 82 28 110"/><path d="M28 110 Q70 30 114 110"/><path d="M114 110 Q143 55 172 110"/><path d="M172 110 Q200 62 228 110"/></g>
+                  <g fill="#FFD9CC"><circle cx="14" cy="110" r="3.5"/><circle cx="28" cy="110" r="3.5"/><circle cx="114" cy="110" r="3.5"/><circle cx="172" cy="110" r="3.5"/><circle cx="228" cy="110" r="3.5"/></g>
+                  <g fill="#A99D8A" font-family="Hanken Grotesk, sans-serif" font-size="10"><text x="2" y="128">Gen 22</text><text x="18" y="142">Ex 12</text><text x="102" y="128">Is 53</text><text x="162" y="128">Jn 1</text><text x="206" y="128">Rev 5</text></g>
+                </svg>
+                <p class="q">“Look, the Lamb of God, who takes away the sin of the world!”</p>
+                <p>John 1:29 · day 4 of 7</p>
+              </div>
+              <div class="view" data-view="lens" hidden>
+                <span class="chip">Lens</span>
+                <div class="lens-word" lang="he">חֶסֶד</div>
+                <h4 style="text-align:center">chesed</h4>
+                <p style="text-align:center">Loyal, steadfast love · Strong’s H2617</p>
+                <div class="answer"><b>IN PSALM 136</b>26 times, once in every verse.</div>
+                <div class="answer"><b>IN PSALM 136, BSB RENDERS IT</b>“loving devotion”</div>
+              </div>
+              <div class="view" data-view="ask" hidden>
+                <span class="chip">Ask</span>
+                <p class="q">Does God go looking for the lost?</p>
+                <p>Answered only with verses:</p>
+                <div class="answer"><b>GENESIS 3:9</b><i>“But the LORD God called out to the man, ‘Where are you?’”</i></div>
+                <div class="answer"><b>LUKE 19:10</b><i>“For the Son of Man came to seek and to save the lost.”</i></div>
+                <div class="answer"><b>PSALM 119:176</b><i>“I have strayed like a lost sheep; seek Your servant…”</i></div>
+              </div>
+              <div class="tabbar" role="tablist" aria-label="App screens">
+                <button role="tab" data-tab="today" aria-selected="true">Today</button>
+                <button role="tab" data-tab="map" aria-selected="false">Map</button>
+                <button role="tab" data-tab="thread" aria-selected="false">Thread</button>
+                <button role="tab" data-tab="lens" aria-selected="false">Lens</button>
+                <button role="tab" data-tab="ask" aria-selected="false">Ask</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="features">
+            <button class="feature" data-rv data-tab="today" aria-pressed="true"><span class="tag">Today</span><h3>One map a day</h3><p>A passage drawn as a shape, its key verse, a short reflection, one question and a prayer. Three minutes.</p></button>
+            <button class="feature" data-rv data-tab="map" aria-pressed="false"><span class="tag">Map</span><h3>How a passage is built</h3><p>Refrains, mirrors, sevens and acrostics, drawn so you can see them, with the scholar who found them named.</p></button>
+            <button class="feature" data-rv data-tab="thread" aria-pressed="false"><span class="tag">Thread</span><h3>From Genesis to Revelation</h3><p>Follow one image across the whole Bible in a seven-day plan: the lamb, the water, the garden.</p></button>
+            <button class="feature" data-rv data-tab="lens" aria-pressed="false"><span class="tag">Lens</span><h3>Every word, opened</h3><p>Tap a word to see its Hebrew or Greek root and every place it appears.</p></button>
+            <button class="feature" data-rv data-tab="ask" aria-pressed="false"><span class="tag">Ask</span><h3>Answers made of Scripture</h3><p>Ask a question. The answer is built only from verses, and every verse is shown.</p></button>
+            <a class="feature" data-rv href="#bible"><span class="tag">Your Bible</span><h3>A stitch for every day</h3><p>Each chapter you read is sewn into your Bible. Watch all 1,189 fill in.</p></a>
+          </div>
+          <div class="band" data-rv>
+            <p>Every screen you just touched is being built now.</p>
+            <a class="btn primary glow" href="#support">Help build it</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="bible">
+    <div class="vx" id="vx" aria-label="Every verse of the Bible as a dot: scattered like stars, sorted into the 66 books of the Protestant Bible, then gathered into one design">
+      <div class="vx-stage">
+        <canvas id="vx-canvas" aria-hidden="true"></canvas>
+        <div class="vx-beats">
+          <div class="vx-beat"><span class="eyebrow">The Bible</span><h3><b data-count="31102">31,102</b> verses.</h3><p>Scattered, they look like stars.</p></div>
+          <div class="vx-beat low"><h3>Sorted into <em>66 books</em>.</h3><p>The Protestant canon, in the order of English Bibles. Old Testament in linen, New Testament in red.</p></div>
+          <div class="vx-beat low final"><h3>Together, <em>one design</em>.</h3><p>Genesis at the center, Revelation at the rim. Every point of light is a verse.</p></div>
+        </div>
+        <p class="vx-note">Each dot is one verse · <span class="lg">King James</span><span class="sm">KJV</span> numbering</p>
+      </div>
+    </div>
+    <div class="wrap">
+      <p class="eyebrow" data-rv>Book by book</p>
+      <h2 class="sec-title" data-split>Explore it <em>chapter by chapter</em>.</h2>
+      <div class="stats" data-rv>
+        <div class="stat"><b data-count="1189">1,189</b><span>chapters</span></div>
+        <div class="stat"><b data-count="929">929</b><span>in the Old Testament</span></div>
+        <div class="stat"><b data-count="260">260</b><span>in the New Testament</span></div>
+      </div>
+      <div class="bible" id="bible-grid" aria-label="Each dot is one chapter of the Bible, grouped by book"></div>
+      <p class="bible-read" id="bible-read" aria-live="polite">Each dot is one chapter. Tap a book.</p>
+      <p class="fine">66-book Protestant canon. Old Testament in linen, New Testament in red.</p>
+    </div>
+  </section>
+
+  <section id="app">
+    <div class="wrap">
+      <p class="eyebrow" data-rv>The app</p>
+      <h2 class="sec-title" data-split>Read it <em>deeper</em>, one day at a time.</h2>
+      <div class="dive">
+        <div class="dive-item" data-rv>
+          <span class="n">01</span>
+          <div><h3>Refrains</h3><p>Some passages keep returning to one line. Psalm 136 walks through creation, the Exodus, the wilderness and rescue, and every verse ends the same way.</p></div>
+          <div class="demo"><div class="big"><span data-count="26">26</span> of 26</div><p style="margin-top:8px">verses in Psalm 136 end with “His loving devotion endures forever.”</p></div>
+        </div>
+        <div class="dive-item" data-rv>
+          <span class="n">02</span>
+          <div><h3>Mirrors</h3><p>Hebrew storytellers often built a passage in matching halves around a center. The flood story climbs to one line and walks back down.</p>
+            <details><summary>Why does the flood turn on Genesis 8:1?</summary><p>Gordon Wenham argued in 1978 that the flood narrative pairs its elements in reverse order around “God remembered Noah.” Days, the covenant and Noah’s sons appear on both sides. Not every scholar agrees, so Tavnit draws the structure and names the study it comes from.</p></details>
+          </div>
+          <div class="demo"><p style="margin:0">At the center of the flood</p><p class="big" style="font-size:34px;margin-top:6px">“But God remembered Noah”</p><p style="margin-top:6px">Genesis 8:1</p></div>
+        </div>
+        <div class="dive-item" data-rv>
+          <span class="n">03</span>
+          <div><h3>The Lens</h3><p>Tap any word to see the Hebrew or Greek beneath it, what it means and where else it appears.</p></div>
+          <div class="demo"><div class="he" lang="he">אַיֶּכָּה</div><p style="margin-top:6px;color:var(--vellum)">ayyekkah · “Where are you?” · Genesis 3:9</p><p style="margin-top:4px">The first question God asks in the Bible.</p></div>
+        </div>
+        <div class="dive-item" data-rv>
+          <span class="n">04</span>
+          <div><h3>Ask</h3><p>Ask anything. Tavnit answers only with verses from the Berean Standard Bible and shows every one it used. It quotes the text instead of arguing for one church’s position.</p></div>
+          <div class="demo"><p class="q">“Your word is a lamp to my feet and a light to my path.”</p><p style="margin-top:6px">Psalm 119:105</p></div>
+        </div>
+      </div>
+      <div class="band" data-rv>
+        <p>People who read with us help build it.</p>
+        <a class="btn primary glow" href="#give" data-founders="open">Become a founder</a>
+        <a class="btn primary glow" href="#join" data-founders="closed">Save your spot</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="support">
+    <div class="wrap">
+      <p class="eyebrow" data-rv>Build it</p>
+      <h2 class="sec-title" data-split>Build it <em>with us</em>.</h2>
+      <p class="lede" style="margin-top:14px" data-rv>Tavnit is an app for reading the Bible closely, passage by passage and word by word. Founding members fund the first release and use it first.</p>
+      <div class="support-grid">
+        <div class="give" data-founders="closed" data-rv>
+          <h3>Founders open <em>soon</em>.</h3>
+          <p style="margin:0;color:var(--dust)">When the first preview is ready, founding members will fund the first release and use it first.</p>
+          <ul>
+            <li>Your name among the founders, if you want it</li>
+            <li>First access to every new part of the app</li>
+            <li>A short email at each step of the build</li>
+          </ul>
+          <a class="btn primary glow" href="#join">Join the waitlist to hear first</a>
+          <p class="fine">No payments are taken on this site yet.</p>
+          <blockquote>“Let us not grow weary in well-doing, for in due time we will reap a harvest if we do not give up.”<cite>GALATIANS 6:9</cite></blockquote>
+        </div>
+        <form class="give" id="give" novalidate data-founders="open" data-rv>
+          <h3>Give what <em>you choose</em>.</h3>
+          <p style="margin:0;color:var(--dust)">Contributions fund building and releasing the app.</p>
+          <ul>
+            <li>Your name among the founders, if you want it</li>
+            <li>First access to every new part of the app</li>
+            <li>A short email at each step of the build</li>
+          </ul>
+          <div class="tiers" role="group" aria-label="Amount">
+            <button type="button" class="tier" data-amt="5" aria-pressed="false">$5</button>
+            <button type="button" class="tier" data-amt="10" aria-pressed="false">$10</button>
+            <button type="button" class="tier" data-amt="25" aria-pressed="false">$25</button>
+            <button type="button" class="tier" data-amt="50" aria-pressed="true">$50</button>
+            <button type="button" class="tier" data-amt="100" aria-pressed="false">$100</button>
+            <button type="button" class="tier" data-amt="500" aria-pressed="false">$500</button>
+          </div>
+          <p class="perk" id="perk">From $50: lifetime access to the Tavnit app, for as long as we run it.</p>
+          <a class="btn primary glow" id="give-btn" href="#give">Become a founder · $50</a>
+          <p class="fine" id="give-note">Secure checkout by Stripe. This is support for the app, not an investment. See the <a href="legal.html#founders">founder terms</a>.</p>
+          <blockquote>“Let us not grow weary in well-doing, for in due time we will reap a harvest if we do not give up.”<cite>GALATIANS 6:9</cite></blockquote>
+        </form>
+        <div class="lights" data-rv>
+          <canvas id="lights-canvas" width="800" height="640" aria-hidden="true"></canvas>
+          <div>
+            <h3>Each stitch is <em>one founder</em>.</h3>
+            <p style="color:var(--dust);max-width:40ch">Every founder will be sewn into the same cloth, shown equally. Names appear only for those who choose it.</p>
+            <p class="eyebrow" style="margin-top:18px">Opening soon · join the waitlist</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="books" class="books-sec">
+    <div class="wrap">
+      <p class="eyebrow" data-rv>Books</p>
+      <h2 class="sec-title" data-split>The shape of <em>Scripture</em>.</h2>
+      <p class="lede" style="margin-top:14px" data-rv>Five books, drawn and written with the same care as the app. Swipe for all five.</p>
+      <div class="shelf" id="shelf"></div>
+      <form class="join" data-form="books" novalidate style="max-width:560px" data-rv>
+        <label for="email-books">Be first to read them. We will email you when they are ready.</label>
+        <input id="email-books" type="email" name="email" placeholder="you@email.com" autocomplete="email" required>
+        <button class="btn primary" type="submit">Join the waitlist</button>
+        <p class="note" aria-live="polite"></p>
+        <p class="consent">About one short email a week while we build. Unsubscribe any time. <a href="legal.html#privacy">Privacy</a></p>
+      </form>
+      <div class="pillars">
+        <div class="pillar" data-rv><h3>Scripture from the source</h3><p>English from the Berean Standard Bible. Hebrew from the Westminster Leningrad Codex and Greek from the SBL Greek New Testament. Every quotation in the app is pulled from these sources, not retyped. Greek: SBLGNT © 2010 Society of Biblical Literature and Logos Bible Software (CC BY 4.0).</p></div>
+        <div class="pillar" data-rv><h3>Counted in code</h3><p>Every count is rerun on the text with its rule printed beside it, so you can check it yourself.</p></div>
+        <div class="pillar" data-rv><h3>Honest about limits</h3><p>No Bible codes, no hidden messages. Structures name the scholar who proposed them, and claims that fail are called failures.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap">
+      <p class="eyebrow" data-rv>Questions</p>
+      <h2 class="sec-title" data-split>Before you <em>begin</em>.</h2>
+      <div class="faq">
+        <details data-rv><summary>When can I try the app?</summary><p>It opens in small groups. Save your spot and we will email you when your place is ready.</p></details>
+        <details data-rv><summary>Why the name Tavnit?</summary><p><span lang="he" style="font-family:var(--hebrew)">תַּבְנִית</span> (tavnit) is the Hebrew word for “pattern.” It is the word God uses when He shows Moses the design of the tabernacle: “See to it that you make everything according to the pattern shown you on the mountain” (Exodus 25:40). Tavnit shows you the pattern inside every passage.</p></details>
+        <details data-rv><summary>Is it for my church?</summary><p>Tavnit is for anyone who reads the Bible. It uses the 66-book Protestant canon, and its answers stay with what the text says instead of taking sides between traditions.</p></details>
+        <details data-rv><summary>Do I need to read Hebrew or Greek?</summary><p>No. Everything is in English. The original words are there when you tap them.</p></details>
+        <details data-rv><summary>Is this a Bible code site?</summary><p>No. We do not look for hidden messages. We show structures that scholars have found in the text, and we name who proposed them.</p></details>
+        <details data-rv><summary>Which translation do you use?</summary><p>The Berean Standard Bible, a modern English translation in the public domain.</p></details>
+        <details data-rv data-founders="open"><summary>How can I help build it?</summary><p>Give from $5, with your name among the founders if you like. From $50, lifetime access to the app for as long as we run it; from $100, the five books as e-books when they are released.</p></details>
+        <details data-rv data-founders="closed"><summary>How can I help build it?</summary><p>Join the waitlist and share what you see. Founding memberships open after the first public preview, and people on the list hear first.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="close">
+    <div class="glowfield" id="close-glow" aria-hidden="true"></div>
+    <div class="wrap">
+      <h2 data-split>See it <em>whole</em>.</h2>
+      <p class="lede" style="margin:18px 0 26px" data-rv>One passage at a time, until the whole story comes into view. Save your spot and help build it for everyone.</p>
+      <div class="cta-row" data-rv><a class="btn primary glow" href="#join">Save your spot</a><a class="btn" href="#give" data-founders="open">Become a founder</a><a class="btn" href="#try" data-founders="closed">Try it</a></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Tavnit · Every text has a shape · © 2026</span>
+    <span>Your email is used only for Tavnit updates and is never sold. It is stored with our email provider. · <a href="legal.html">Legal notice</a> · <a href="legal.html#privacy">Privacy</a> · <span id="contact"></span></span>
+  </div>
+</footer>
+
+<div class="dock"><a class="btn" href="#give" data-founders="open">Become a founder</a><a class="btn" href="#try" data-founders="closed">Try it</a><a class="btn primary" href="#join">Save your spot</a></div>
+
+<script src="assets/js/gsap.min.js"></script>
+<script src="assets/js/ScrollTrigger.min.js"></script>
+<script src="assets/js/lenis.min.js"></script>
+<script>
+/* ---- Settings: fill these in before you publish on your own domain ---- */
+const CONFIG = {
+  /* Waitlist. provider "kit": paste the Kit form id (the number in the form's share URL).
+     provider "json": url of any endpoint that accepts POST JSON {email, ...} (e.g. Formspree).
+     provider "form": url of a plain HTML form action (Brevo, MailerLite...); emailField = its email input name. */
+  waitlist: { provider: "", formId: "", url: "", emailField: "email" },
+  foundersOpen: false,             /* keep false until the first public preview; true shows the Stripe tiers */
+  stripeLinks: { 5: "", 10: "", 25: "", 50: "", 100: "", 500: "" },  /* one Stripe Payment Link per amount */
+  contactEmail: "menudaapp@proton.me",
+  analytics: { plausibleDomain: "", umamiWebsiteId: "" }   /* cookieless: no consent banner needed */
+};
+
+document.documentElement.classList.toggle('founders-closed', !CONFIG.foundersOpen);
+document.getElementById('contact').textContent = CONFIG.contactEmail;
+(() => {
+  const a = CONFIG.analytics, add = (src, attrs) => { const sc = document.createElement('script'); sc.defer = true; sc.src = src; Object.entries(attrs).forEach(([k, v]) => sc.setAttribute(k, v)); document.head.appendChild(sc); };
+  if (a.plausibleDomain) add('https://plausible.io/js/script.js', { 'data-domain': a.plausibleDomain });
+  if (a.umamiWebsiteId) add('https://cloud.umami.is/script.js', { 'data-website-id': a.umamiWebsiteId });
+})();
+/* remember where a visitor came from (one UTM link per video) and send it with the signup */
+const UTM = (() => {
+  const keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'], q = new URLSearchParams(location.search), o = {};
+  keys.forEach(k => { if (q.get(k)) o[k] = q.get(k).slice(0, 80); });  /* read from the link only; nothing is stored on the device */
+  return o;
+})();
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const G = typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined' && !reduce;
+if (G) gsap.registerPlugin(ScrollTrigger);
+
+/* smooth scroll */
+let lenis = null;
+if (G && typeof Lenis !== 'undefined' && matchMedia('(pointer: fine)').matches) {
+  lenis = new Lenis({ duration: 1.15, smoothWheel: true });
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add(t => lenis.raf(t * 1000));
+  gsap.ticker.lagSmoothing(0);
+  document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+    const id = a.getAttribute('href'); const el = id.length > 1 && document.querySelector(id);
+    if (el) { e.preventDefault(); lenis.scrollTo(el, { offset: -70, duration: 1.4 }); }
+  }));
+}
+
+/* text splitting helpers */
+function splitWords(el) {
+  const walk = node => {
+    [...node.childNodes].forEach(n => {
+      if (n.nodeType === 3) {
+        const frag = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach(part => {
+          if (!part) return;
+          if (/^\s+$/.test(part)) frag.appendChild(document.createTextNode(part));
+          else { const s = document.createElement('span'); s.className = 'w'; s.textContent = part; frag.appendChild(s); }
+        });
+        n.replaceWith(frag);
+      } else if (n.nodeType === 1 && !n.classList.contains('w')) walk(n);
+    });
+  };
+  walk(el); return [...el.querySelectorAll('.w')];
+}
+function splitLines(el) {
+  const words = splitWords(el);
+  const lines = []; let top = null;
+  words.forEach(w => { const t = w.offsetTop; if (top === null || Math.abs(t - top) > 4) { lines.push([]); top = t; } lines.at(-1).push(w); });
+  const html = lines.map(ws => {
+    const box = document.createElement('span'); box.className = 'line-mask';
+    const inner = document.createElement('span');
+    ws.forEach((w, i) => { const holder = w.closest('em') ? (() => { const em = document.createElement('em'); em.appendChild(w.cloneNode(true)); return em; })() : w.cloneNode(true); inner.appendChild(holder); if (i < ws.length - 1) inner.appendChild(document.createTextNode(' ')); });
+    box.appendChild(inner); return box;
+  });
+  el.innerHTML = ''; html.forEach(b => el.appendChild(b));
+  return [...el.querySelectorAll('.line-mask > span')];
+}
+
+/* opening sequence */
+function opening() {
+  const en = document.getElementById('epi-en');
+  if (!G) { en.classList.add('lit'); return; }
+  const tl = gsap.timeline({ delay: .2, defaults: { ease: 'power3.out' } });
+  tl.from('.epi .he', { y: -14, opacity: 0, filter: 'blur(6px)', duration: 1.1 });
+  tl.from(splitWords(en), { y: -14, opacity: 0, filter: 'blur(6px)', duration: 1.1, stagger: .08 }, '-=.8');
+  tl.add(() => en.classList.add('lit'), '-=.3');
+  tl.from('.epi small', { opacity: 0, duration: .8 }, '<');
+  tl.from(splitLines(document.getElementById('hero-h1')), { yPercent: 110, duration: 1.15, ease: 'expo.out', stagger: .11 }, .5);
+  tl.from('.h-copy [data-rv]', { y: 22, opacity: 0, duration: .9, stagger: .09 }, '-=.7');
+  tl.from('#hero-sky', { opacity: 0, scale: .94, duration: 1.6, ease: 'power2.out' }, .3);
+  gsap.to('#hero-sky', { yPercent: 14, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+}
+
+/* scroll reveals */
+function reveals() {
+  if (!G) return;
+  document.querySelectorAll('section:not(.hero) [data-rv]').forEach(el => gsap.from(el, { y: 26, opacity: 0, duration: .9, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } }));
+  document.querySelectorAll('[data-split]').forEach(h => { const lines = splitLines(h); gsap.from(lines, { yPercent: 110, duration: 1.1, ease: 'expo.out', stagger: .1, scrollTrigger: { trigger: h, start: 'top 85%', once: true } }); });
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const end = +el.dataset.count, o = { v: 0 };
+    gsap.to(o, { v: end, duration: 1.6, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 90%', once: true }, onUpdate: () => el.textContent = Math.round(o.v).toLocaleString('en-US') });
+  });
+  gsap.fromTo('#close-glow', { yPercent: -8, scale: 1.1 }, { yPercent: 4, scale: 1, ease: 'none', scrollTrigger: { trigger: '.close', start: 'top bottom', end: 'bottom bottom', scrub: true } });
+}
+
+/* the red thread: from the hero knot ring down to the phone, drawn as you scroll */
+function thread() {
+  const svg = document.getElementById('thread'), path = document.getElementById('thread-path'), bead = document.getElementById('thread-bead'), phone = document.getElementById('phone'), main = document.getElementById('top');
+  if (reduce) { svg.style.display = 'none'; phone.classList.add('landed'); return; }
+  let len = 0, endY = 0;
+  function measure() {
+    const mr = main.getBoundingClientRect(), sky = document.getElementById('hero-sky').getBoundingClientRect(), pr = phone.getBoundingClientRect();
+    const sx = sky.left + sky.width / 2 - mr.left, sy = sky.top + sky.height * .5 - mr.top;
+    const ex = pr.left + pr.width / 2 - mr.left, ey = pr.top - mr.top + 2;
+    svg.setAttribute('height', ey + 40); svg.setAttribute('viewBox', `0 0 ${mr.width} ${ey + 40}`);
+    const midY = (sy + ey) / 2, sway = Math.min(260, mr.width * .28);
+    path.setAttribute('d', `M ${sx} ${sy} C ${sx + sway} ${sy + 160}, ${sx + sway} ${midY - 120}, ${(sx + ex) / 2} ${midY} S ${ex - sway * .4} ${ey - 220}, ${ex} ${ey}`);
+    len = path.getTotalLength(); endY = ey; path.style.strokeDasharray = len; draw();
+  }
+  function draw() {
+    const target = scrollY + innerHeight * .55 - main.getBoundingClientRect().top - scrollY;
+    let lo = 0, hi = len;
+    for (let i = 0; i < 22; i++) { const m = (lo + hi) / 2; if (path.getPointAtLength(m).y < target) lo = m; else hi = m; }
+    const L = scrollY < 10 ? 0 : lo;
+    path.style.strokeDashoffset = len - L;
+    const p = path.getPointAtLength(Math.max(0.01, L));
+    bead.setAttribute('cx', p.x); bead.setAttribute('cy', p.y); bead.style.opacity = L > 2 && L < len - 2 ? 1 : 0;
+    phone.classList.toggle('landed', L >= len - 2);
+  }
+  addEventListener('resize', measure); addEventListener('scroll', draw, { passive: true });
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => setTimeout(measure, 300));
+  if (lenis) lenis.on('scroll', draw);
+}
+
+/* hero canvas: 26 knots on one red thread */
+function heroCanvas() {
+  const c = document.getElementById('hero-canvas'), x = c.getContext('2d');
+  const W = c.width, H = c.height, CX = W / 2, CY = H / 2 - 10, R = 300, N = 26;
+  const pt = (i, t) => { const a = -Math.PI / 2 + i * 2 * Math.PI / N + t * .015; return [CX + R * Math.cos(a), CY + R * Math.sin(a)]; };
+  function frame(ms) {
+    const t = reduce ? 0 : ms / 1000;
+    x.clearRect(0, 0, W, H);
+    const cycle = 16, prog = reduce ? 1 : Math.min(1, (t % cycle) / 9);
+    const shown = prog * N;
+    x.lineWidth = 2.2; x.strokeStyle = '#E2604A'; x.shadowColor = 'rgba(226,96,74,.8)'; x.shadowBlur = 14; x.beginPath();
+    for (let s = 0; s <= shown * 12; s++) {
+      const u = s / 12, i = Math.floor(u), f = u - i;
+      const [ax, ay] = pt(i, t), [bx, by] = pt(i + 1, t);
+      const mx = (ax + bx) / 2, my = (ay + by) / 2, inx = CX + (mx - CX) * .78, iny = CY + (my - CY) * .78;
+      const qx = (1 - f) * (1 - f) * ax + 2 * (1 - f) * f * inx + f * f * bx, qy = (1 - f) * (1 - f) * ay + 2 * (1 - f) * f * iny + f * f * by;
+      s ? x.lineTo(qx, qy) : x.moveTo(qx, qy);
+    }
+    x.stroke(); x.shadowBlur = 0;
+    for (let i = 0; i < N; i++) {
+      const [px, py] = pt(i, t), on = i < shown;
+      const g = x.createRadialGradient(px, py, 0, px, py, on ? 30 : 14);
+      g.addColorStop(0, on ? 'rgba(255,180,160,.55)' : 'rgba(210,190,149,.14)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+      x.fillStyle = g; x.beginPath(); x.arc(px, py, on ? 30 : 14, 0, 6.283); x.fill();
+      x.fillStyle = on ? '#FFD9CC' : 'rgba(210,190,149,.45)'; x.beginPath(); x.arc(px, py, on ? 7.5 : 5, 0, 6.283); x.fill();
+    }
+    x.textAlign = 'center'; x.fillStyle = '#D2BE95'; x.font = '60px "Frank Ruhl Libre", serif'; x.direction = 'rtl';
+    x.fillText('כִּי לְעוֹלָם חַסְדּוֹ', CX, CY - 6); x.direction = 'ltr';
+    x.fillStyle = '#A99D8A'; x.font = 'italic 28px "Libre Caslon Text", serif'; x.fillText('ki le‘olam chasdo', CX, CY + 46);
+    x.fillStyle = '#EEE4D2'; x.font = '34px "Libre Caslon Display", serif'; x.fillText(Math.max(1, Math.ceil(shown)) + ' of 26', CX, CY + 104);
+    if (!reduce) requestAnimationFrame(frame);
+  }
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => requestAnimationFrame(frame));
+}
+
+/* waitlist */
+document.querySelectorAll('form.join').forEach(form => {
+  const note = form.querySelector('.note'), input = form.querySelector('input');
+  input.addEventListener('input', () => { note.textContent = ''; note.className = 'note'; });
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const email = input.value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { note.textContent = 'Enter a valid email address.'; return; }
+    const W = CONFIG.waitlist, btn = form.querySelector('button');
+    if (!W.provider) { note.textContent = 'Preview: the waitlist is not connected yet.'; return; }
+    const extra = { source: form.dataset.form, ...UTM };
+    btn.disabled = true;
+    try {
+      if (W.provider === 'json') {
+        const r = await fetch(W.url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ email, ...extra }) });
+        if (!r.ok) throw new Error();
+      } else {
+        // Kit and plain form endpoints: a normal form post; the response is opaque, so success is assumed once it is sent
+        const fd = new URLSearchParams(), kit = W.provider === 'kit';
+        fd.set(kit ? 'email_address' : (W.emailField || 'email'), email);
+        Object.entries(extra).forEach(([k, v]) => fd.set(kit ? `fields[${k}]` : k, v));
+        await fetch(kit ? `https://app.kit.com/forms/${encodeURIComponent(W.formId)}/subscriptions` : W.url, { method: 'POST', mode: 'no-cors', body: fd });
+      }
+      note.textContent = W.provider === 'json' ? 'You are on the list. We will write when your place is ready.' : 'Almost there: check your inbox and confirm your email.'; note.className = 'note ok'; input.value = '';
+      if (window.plausible) window.plausible('Signup', { props: { source: form.dataset.form, video: UTM.utm_content || '' } });
+      if (window.umami) window.umami.track('Signup', { source: form.dataset.form, video: UTM.utm_content || '' });
+    } catch { note.textContent = 'That did not go through. Try again in a moment.'; }
+    btn.disabled = false;
+  });
+});
+
+/* phone tabs */
+const titles = { today: 'Today · day 12', map: 'Map', thread: 'Thread', lens: 'Lens', ask: 'Ask' };
+function show(tab) {
+  document.querySelectorAll('.view').forEach(v => v.hidden = v.dataset.view !== tab);
+  document.querySelectorAll('.tabbar button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === tab)));
+  document.querySelectorAll('.feature[data-tab]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.tab === tab)));
+  document.getElementById('screen-title').textContent = titles[tab];
+}
+document.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => show(b.dataset.tab)));
+(() => {
+  const g = document.getElementById('ring-mini'); let s = '';
+  for (let i = 0; i < 26; i++) { const a = -Math.PI / 2 + i * 2 * Math.PI / 26; s += `<circle cx="${(120 + 80 * Math.cos(a)).toFixed(1)}" cy="${(100 + 80 * Math.sin(a)).toFixed(1)}" r="4" fill="${i < 12 ? '#FFD9CC' : '#7D6A5A'}"/>`; }
+  g.innerHTML = `<circle cx="120" cy="100" r="80" fill="none" stroke="#E2604A" stroke-opacity=".45"/>` + s + `<text x="120" y="96" text-anchor="middle" fill="#D2BE95" font-family="Frank Ruhl Libre, serif" font-size="20" direction="rtl">כִּי לְעוֹלָם חַסְדּוֹ</text><text x="120" y="118" text-anchor="middle" fill="#A99D8A" font-family="Libre Caslon Text, serif" font-style="italic" font-size="12">ki le‘olam chasdo</text>`;
+})();
+
+/* Bible grid with sweep */
+(() => {
+  const books = [['Genesis',50],['Exodus',40],['Leviticus',27],['Numbers',36],['Deuteronomy',34],['Joshua',24],['Judges',21],['Ruth',4],['1 Samuel',31],['2 Samuel',24],['1 Kings',22],['2 Kings',25],['1 Chronicles',29],['2 Chronicles',36],['Ezra',10],['Nehemiah',13],['Esther',10],['Job',42],['Psalms',150],['Proverbs',31],['Ecclesiastes',12],['Song of Songs',8],['Isaiah',66],['Jeremiah',52],['Lamentations',5],['Ezekiel',48],['Daniel',12],['Hosea',14],['Joel',3],['Amos',9],['Obadiah',1],['Jonah',4],['Micah',7],['Nahum',3],['Habakkuk',3],['Zephaniah',3],['Haggai',2],['Zechariah',14],['Malachi',4],['Matthew',28],['Mark',16],['Luke',24],['John',21],['Acts',28],['Romans',16],['1 Corinthians',16],['2 Corinthians',13],['Galatians',6],['Ephesians',6],['Philippians',4],['Colossians',4],['1 Thessalonians',5],['2 Thessalonians',3],['1 Timothy',6],['2 Timothy',4],['Titus',3],['Philemon',1],['Hebrews',13],['James',5],['1 Peter',5],['2 Peter',3],['1 John',5],['2 John',1],['3 John',1],['Jude',1],['Revelation',22]];
+  const grid = document.getElementById('bible-grid'), read = document.getElementById('bible-read');
+  let k = 0;
+  books.forEach(([name, n], i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'book-dots' + (i >= 39 ? ' nt' : ''); b.setAttribute('aria-pressed', 'false');
+    b.setAttribute('aria-label', `${name}, ${n} chapter${n > 1 ? 's' : ''}`);
+    let h = ''; for (let j = 0; j < n; j++) h += `<i style="--k:${k++}"></i>`; b.innerHTML = h;
+    b.addEventListener('click', () => { grid.querySelectorAll('.book-dots').forEach(o => o.setAttribute('aria-pressed', 'false')); b.setAttribute('aria-pressed', 'true'); read.innerHTML = `<b>${name}</b> · ${n} chapter${n > 1 ? 's' : ''} · book ${i + 1} of 66 (Protestant canon)`; });
+    grid.appendChild(b);
+  });
+  if (G) ScrollTrigger.create({ trigger: grid, start: 'top 85%', once: true, onEnter: () => grid.classList.add('sweep') });
+})();
+
+/* verses: galaxy -> 66 sorted books -> one design. One dot per verse. */
+(() => {
+  const V = [1533,1213,859,1288,959,658,618,85,810,695,816,719,942,822,280,406,167,1070,2461,915,222,117,1292,1364,154,1273,357,197,73,146,21,48,105,47,56,53,38,211,55,
+             1071,678,1151,879,1007,433,437,257,149,155,104,95,89,47,113,83,46,25,303,108,105,61,105,13,14,25,404];
+  const NB = V.length, N = V.reduce((a, b) => a + b, 0);  // 66 books, 31,102 verses
+  const sec = document.getElementById('vx'), cv = document.getElementById('vx-canvas'), x = cv.getContext('2d');
+  const beats = [...sec.querySelectorAll('.vx-beat')], RANGES = [[-1, .30], [.38, .58], [.82, 1.3]];
+  let seed = 31102; const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+  const gauss = () => { let u = 0, v = 0; while (!u) u = rnd(); v = rnd(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(6.2832 * v); };
+  // per-verse data: book, index in book, galaxy coords (unit), depth
+  const book = new Uint8Array(N), idx = new Uint16Array(N), gx = new Float32Array(N), gy = new Float32Array(N), rz = new Float32Array(N), ph = new Float32Array(N);
+  for (let b = 0, n = 0; b < NB; b++) for (let j = 0; j < V[b]; j++, n++) {
+    book[n] = b; idx[n] = j; rz[n] = rnd(); ph[n] = rnd() * 6.2832;
+    const r0 = rnd();
+    if (r0 < .10) { gx[n] = gauss() * .11; gy[n] = gauss() * .11; }            // core
+    else if (r0 < .84) {                                                        // two spiral arms
+      const u = Math.pow(rnd(), .75), arm = rnd() < .5 ? 0 : Math.PI, th = arm + u * 4.6 + gauss() * .22;
+      const rr = .06 + u * .94, sc = .05 + .07 * u;
+      gx[n] = Math.cos(th) * rr + gauss() * sc; gy[n] = Math.sin(th) * rr + gauss() * sc;
+    } else { const a = rnd() * 6.2832, rr = Math.sqrt(rnd()) * 1.5; gx[n] = Math.cos(a) * rr; gy[n] = Math.sin(a) * rr * 1.2; } // halo
+  }
+  const gKey = n => (book[n] > 38 ? 24 : 0) + Math.min(5, Math.floor(rz[n] * 6)) * 4 + Math.min(3, Math.floor(ph[n] / 6.2832 * 4));
+  const gStart = new Uint32Array(49), order = new Uint32Array(N);
+  for (let n = 0; n < N; n++) gStart[gKey(n) + 1]++;
+  for (let g = 0; g < 48; g++) gStart[g + 1] += gStart[g];
+  { const fill = gStart.slice(0, 48); for (let n = 0; n < N; n++) order[fill[gKey(n)]++] = n; }
+  let maxDpr = 2, lite = false, cost = 0, samples = 0;
+  let W = 0, H = 0, dpr = 1, cell = 2, dot = 1, bx, by, ox, oy, lab = [];
+  function layout() {
+    dpr = Math.min(maxDpr, window.devicePixelRatio || 1); W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    bx = new Float32Array(N); by = new Float32Array(N); ox = new Float32Array(N); oy = new Float32Array(N);
+    // rows: books stacked in canonical order, each wrapped into lines of C verses
+    const top = H * .10, avail = H * .62, rowW = Math.min(W * .86, H * 1.3), x0 = (W - rowW) / 2;
+    const fits = s => { const C = Math.floor(rowW / s); let L = 0; for (const v of V) L += Math.ceil(v / C); return L * s + (NB - 1) * s * .9 + s * 3 <= avail; };
+    let lo = .3, hi = 30; for (let i = 0; i < 30; i++) { const m = (lo + hi) / 2; fits(m) ? lo = m : hi = m; }
+    cell = lo; const C = Math.floor(rowW / cell), used = C * cell, xs = (W - used) / 2;
+    dot = Math.max(1, cell * .62);
+    lab = []; let y = top;
+    for (let b = 0, n = 0; b < NB; b++) {
+      if (b === 39) y += cell * 3;
+      if ([0, 18, 22, 39, 42, 65].includes(b)) lab.push([b, y]);
+      for (let j = 0; j < V[b]; j++, n++) { bx[n] = xs + (j % C + .5) * cell; by[n] = y + (Math.floor(j / C) + .5) * cell; }
+      y += Math.ceil(V[b] / C) * cell + cell * .9;
+    }
+    lab.x = xs;
+    // rings: one ring per book, Genesis innermost, Revelation outermost; golden-angle offset per ring
+    // ring radius follows the running verse count (equal-area), so every verse gets the same room
+    const cx = W / 2, cy = H * .41, R = Math.min(W * 1.02, H * .76) * .40, cum = []; let acc = 0;
+    for (let b = 0; b < NB; b++) { cum.push(acc + V[b] / 2); acc += V[b]; }
+    for (let n = 0; n < N; n++) {
+      const b = book[n], rr = R * (.10 + .90 * Math.sqrt(cum[b] / N)), an = -Math.PI / 2 + b * 2.39996 + (idx[n] / V[book[n]]) * 6.2832;
+      ox[n] = cx + Math.cos(an) * rr; oy[n] = cy + Math.sin(an) * rr;
+    }
+    last = -1;
+  }
+  const seg = (p, a, b) => Math.max(0, Math.min(1, (p - a) / (b - a)));
+  const sm = t => t * t * (3 - 2 * t);
+  const names = ['Genesis','Exodus','Leviticus','Numbers','Deuteronomy','Joshua','Judges','Ruth','1 Samuel','2 Samuel','1 Kings','2 Kings','1 Chronicles','2 Chronicles','Ezra','Nehemiah','Esther','Job','Psalms','Proverbs','Ecclesiastes','Song of Songs','Isaiah','Jeremiah','Lamentations','Ezekiel','Daniel','Hosea','Joel','Amos','Obadiah','Jonah','Micah','Nahum','Habakkuk','Zephaniah','Haggai','Zechariah','Malachi','Matthew','Mark','Luke','John','Acts','Romans','1 Corinthians','2 Corinthians','Galatians','Ephesians','Philippians','Colossians','1 Thessalonians','2 Thessalonians','1 Timothy','2 Timothy','Titus','Philemon','Hebrews','James','1 Peter','2 Peter','1 John','2 John','3 John','Jude','Revelation'];
+  let last = -1, lastT = 0, visible = false;
+  // slow-device renderer: additive dots written straight into one pixel buffer (1x pixels, no per-dot canvas calls)
+  let img = null, buf = null;
+  const RGB = [[233, 220, 198], [255, 217, 204], [210, 190, 149], [226, 96, 74]];
+  function drawPixels(p, k1, k2, t) {
+    const w = cv.width, h = cv.height, s = w / W;
+    if (!img || img.width !== w || img.height !== h) { img = x.createImageData(w, h); buf = img.data; }
+    for (let i = 0; i < buf.length; i += 4) { buf[i] = 21; buf[i + 1] = 16; buf[i + 2] = 14; buf[i + 3] = 255; }
+    const gR = Math.min(Math.max(W, H * .6), H) * .46, gcx = W / 2, gcy = H * .46, rot = t * .018 + p * 1.2, cr = Math.cos(rot), sr = Math.sin(rot), tilt = .58;
+    for (let gi = 0; gi < 48; gi++) {
+      const c = gi >= 24 ? 1 : 0, zq = (gi % 24) >> 2, z = (zq + .5) / 6;
+      const a = ((.22 + .55 * z) * (1 - k1) + .82 * k1) * (1 - .4 * k2);
+      const col = RGB[k1 < .02 ? (zq === 5 ? 1 : 0) : c ? 3 : 2], cr8 = col[0] * a, cg8 = col[1] * a, cb8 = col[2] * a;
+      const sz = Math.max(1, Math.round(dot * s * (k1 < 1 ? (.55 + z * 1.15) * (1 - k1) + k1 : 1) * (1 + .15 * k2)));
+      for (let q = gStart[gi], qe = gStart[gi + 1]; q < qe; q++) {
+        const n = order[q];
+        let px, py;
+        if (k2 > 0) { px = bx[n] + (ox[n] - bx[n]) * k2; py = by[n] + (oy[n] - by[n]) * k2; }
+        else {
+          const ux = gx[n] * cr - gy[n] * sr, uy = (gx[n] * sr + gy[n] * cr) * tilt;
+          const sx = gcx + (ux * .94 - uy * .34) * gR, sy = gcy + (ux * .34 + uy * .94) * gR;
+          px = k1 > 0 ? sx + (bx[n] - sx) * k1 : sx; py = k1 > 0 ? sy + (by[n] - sy) * k1 : sy;
+        }
+        const x0 = Math.round(px * s - sz / 2), y0 = Math.round(py * s - sz / 2);
+        for (let yy = y0; yy < y0 + sz; yy++) {
+          if (yy < 0 || yy >= h) continue;
+          for (let xx = x0, o = (yy * w + x0) * 4; xx < x0 + sz; xx++, o += 4) {
+            if (xx < 0 || xx >= w) continue;
+            buf[o] += cr8; buf[o + 1] += cg8; buf[o + 2] += cb8;
+          }
+        }
+      }
+    }
+    x.setTransform(1, 0, 0, 1, 0, 0); x.putImageData(img, 0, 0);
+  }
+  function draw(p, t) {
+    const k1 = sm(seg(p, .12, .40)), k2 = sm(seg(p, .56, .82));
+    if (lite) { drawPixels(p, k1, k2, t); beatsAt(p); return; }
+    x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, W, H);
+    // galaxy: tilted, slowly turning disc
+    const gR = Math.min(Math.max(W, H * .6), H) * .46, gcx = W / 2, gcy = H * .46, rot = t * .018 + p * 1.2, cr = Math.cos(rot), sr = Math.sin(rot), tilt = .58;
+    x.globalCompositeOperation = 'lighter';
+    const tw = k1 < 1 && !lite, a2 = 1 - .4 * k2;
+    // dots are pre-sorted into 48 groups (testament x depth x twinkle phase) so the canvas state changes 48 times per frame, not 31,102
+    for (let gi = 0; gi < 48; gi++) {
+      const c = gi >= 24 ? 1 : 0, zq = (gi % 24) >> 2, pq = gi & 3, z = (zq + .5) / 6;
+      let a = (.22 + .55 * z) * (1 - k1) + .82 * k1;
+      if (tw) a *= 1 - (1 - k1) * .35 * (.5 + .5 * Math.sin(t * 1.4 + pq * 1.5708));
+      const sz = dot * (k1 < 1 ? (.55 + z * 1.15) * (1 - k1) + k1 : 1) * (1 + .15 * k2), hs = sz / 2;
+      x.globalAlpha = a * a2;
+      x.fillStyle = k1 < .02 ? (zq === 5 ? '#FFD9CC' : '#E9DCC6') : c ? '#E2604A' : '#D2BE95';
+      for (let q = gStart[gi], qe = gStart[gi + 1]; q < qe; q++) {
+        const n = order[q];
+        let px, py;
+        if (k2 > 0) { px = bx[n] + (ox[n] - bx[n]) * k2; py = by[n] + (oy[n] - by[n]) * k2; }
+        else {
+          const ux = gx[n] * cr - gy[n] * sr, uy = (gx[n] * sr + gy[n] * cr) * tilt;
+          const sx = gcx + (ux * .94 - uy * .34) * gR, sy = gcy + (ux * .34 + uy * .94) * gR;
+          if (k1 > 0) { px = sx + (bx[n] - sx) * k1; py = sy + (by[n] - sy) * k1; } else { px = sx; py = sy; }
+        }
+        x.fillRect(px - hs, py - hs, sz, sz);
+      }
+    }
+    x.globalCompositeOperation = 'source-over'; x.globalAlpha = 1;
+    // book labels while sorted
+    const la = seg(p, .30, .40) * (1 - seg(p, .54, .60));
+    if (la > 0 && lab.x > 120) {
+      x.globalAlpha = la * .7; x.fillStyle = '#A99D8A'; x.font = '600 10px "Hanken Grotesk", sans-serif'; x.textAlign = 'right'; x.textBaseline = 'top';
+      for (const [b, y] of lab) x.fillText(names[b].toUpperCase(), lab.x - 12, y - 1);
+      x.globalAlpha = 1;
+    }
+    beatsAt(p);
+  }
+  function beatsAt(p) {
+    beats.forEach((el, i) => { const [a, b] = RANGES[i], f = .06; const o = Math.max(0, Math.min(1, (p - a) / f, (b - p) / f)); el.style.opacity = o; el.style.transform = `translateY(${(1 - o) * 14}px)`; });
+  }
+  function progress() { const r = sec.getBoundingClientRect(); return Math.max(0, Math.min(1, -r.top / (r.height - innerHeight))); }
+  function loop(ms) {
+    if (visible) {
+      const p = progress(), t = ms / 1000;
+      // keep twinkling while the galaxy shows (throttled to ~30fps), otherwise redraw only on scroll
+      if (p !== last || (!lite && p < .40 && ms - lastT > 33)) {
+        const t0 = performance.now(); draw(p, t); last = p; lastT = ms;
+        // slow device: drop to 1x pixels, then stop the twinkle so scrolling stays smooth
+        cost = cost * .8 + (performance.now() - t0) * .2; samples++;
+        if (!lite && samples > 5 && cost > 14) { if (maxDpr > 1 && cost < 40) { maxDpr = 1; layout(); } else { maxDpr = 1; lite = true; layout(); } samples = 0; cost = 0; }
+      }
+    }
+    requestAnimationFrame(loop);
+  }
+  layout();
+  if (reduce) { draw(1, 0); beats.forEach(b => { b.style.opacity = b.classList.contains('final') ? 1 : 0; b.style.transform = 'none'; }); }
+  else {
+    new IntersectionObserver(es => es.forEach(e => visible = e.isIntersecting), { rootMargin: '100px 0px' }).observe(sec);
+    requestAnimationFrame(loop);
+  }
+  let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { layout(); if (reduce) draw(1, 0); }, 150); });
+})();
+
+/* founders */
+(() => {
+  const perk = document.getElementById('perk'), btn = document.getElementById('give-btn'), note = document.getElementById('give-note'), base = note.innerHTML;
+  function pick(a) {
+    document.querySelectorAll('.tier').forEach(t => t.setAttribute('aria-pressed', String(+t.dataset.amt === a)));
+    perk.textContent = a >= 100 ? 'From $100: lifetime access to the Tavnit app, for as long as we run it, and the five books as e-books when released.' : a >= 50 ? 'From $50: lifetime access to the Tavnit app, for as long as we run it.' : 'Thank you. Every stitch counts.';
+    btn.textContent = `Become a founder · $${a}`;
+    const link = CONFIG.stripeLinks[a];
+    btn.href = link || '#give'; btn.target = link ? '_blank' : ''; btn.rel = link ? 'noopener' : '';
+    note.innerHTML = link ? base : 'Preview: checkout is not connected yet.';
+  }
+  document.querySelectorAll('.tier').forEach(t => t.addEventListener('click', () => pick(+t.dataset.amt)));
+  pick(50);
+})();
+
+/* founders cloth: stitches sewn across the panel */
+(() => {
+  const c = document.getElementById('lights-canvas'), x = c.getContext('2d');
+  const rows = 9, cols = 22;
+  function f(ms) {
+    const t = reduce ? 30 : ms / 1000; x.clearRect(0, 0, 800, 640);
+    for (let r = 0; r < rows; r++) for (let q = 0; q < cols; q++) {
+      const px = 30 + q * 35, py = 300 + r * 36 + (q % 2) * 4, idx = r * cols + q, on = (idx * 37 % 199) < (t * 6 % 200);
+      x.strokeStyle = on ? 'rgba(226,96,74,.9)' : 'rgba(210,190,149,.18)'; x.lineWidth = on ? 2 : 1.2;
+      if (on) { x.shadowColor = 'rgba(226,96,74,.8)'; x.shadowBlur = 8; }
+      x.beginPath(); x.moveTo(px, py); x.lineTo(px + 18, py + (r % 2 ? 8 : -8)); x.stroke(); x.shadowBlur = 0;
+    }
+    if (!reduce) requestAnimationFrame(f);
+  }
+  requestAnimationFrame(f);
+})();
+
+/* books: 3D covers that turn toward you as the shelf scrolls in */
+(() => {
+  const vols = [
+    ['All 66 books', 'The Sixty-Six', 'How every book of the 66-book Bible is built, and how each hands over to the next.', 'Which line sits at the center of the flood story?', 22],
+    ['Volume 1', 'The Mirrors', 'Passages that fold on their center, from Genesis to Revelation.', 'What does the story turn on when everything is underwater?', 18],
+    ['Volume 2', 'The Threads', 'One image followed across the whole Bible.', 'Where does the lamb first appear, and where does it last appear?', 30],
+    ['Volume 3', 'The Hundred and Fifty', 'Every psalm drawn as a shape.', 'Which psalm repeats one line 26 times?', 26],
+    ['Volume 4', 'Counted Honestly', 'Popular Bible number claims, tested in code.', 'Does “fear not” really appear 365 times?', 14]
+  ];
+  const shelf = document.getElementById('shelf');
+  vols.forEach(([v, title, sub, q, n]) => {
+    let dots = '';
+    for (let i = 0; i < n; i++) { const a = -Math.PI / 2 + i * 2 * Math.PI / n; dots += `<circle cx="${(100 + 58 * Math.cos(a)).toFixed(1)}" cy="${(80 + 58 * Math.sin(a)).toFixed(1)}" r="3" fill="${i % 3 ? '#D2BE95' : '#E2604A'}"/>`; }
+    const el = document.createElement('article'); el.className = 'vol';
+    el.innerHTML = `<div class="book3d"><div class="spine"></div><div class="front"><small>${v}</small><svg viewBox="0 0 200 160" aria-hidden="true"><circle cx="100" cy="80" r="58" fill="none" stroke="#E2604A" stroke-opacity=".5"/>${dots}</svg><b>${title}</b></div></div><div class="body"><p>${sub}</p><p class="eyebrow" style="margin-top:6px">Inside</p><p class="inside">${q}</p></div>`;
+    shelf.appendChild(el);
+  });
+  if (G) {
+    const bks = gsap.utils.toArray('.book3d');
+    gsap.timeline({ scrollTrigger: { trigger: shelf, start: 'top 95%', end: 'top 45%', scrub: .8 } })
+      .fromTo(bks, { '--ry': '-78deg' }, { '--ry': '-22deg', ease: 'power2.out', stagger: .12, duration: 1 }, 0)
+      .fromTo('.vol .body', { y: 40, opacity: 0 }, { y: 0, opacity: 1, stagger: .12, duration: .7 }, 0);
+  }
+})();
+
+/* rail */
+(() => {
+  const links = [...document.querySelectorAll('.rail a')];
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) links.forEach(l => l.classList.toggle('on', l.dataset.rail === e.target.id)); }), { rootMargin: '-45% 0px -50% 0px' });
+  ['try', 'bible', 'app', 'support', 'books'].forEach(id => io.observe(document.getElementById(id)));
+})();
+
+heroCanvas();
+(document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { opening(); reveals(); thread(); if (G) ScrollTrigger.refresh(); });
+</script>
+
+</body>
+</html>

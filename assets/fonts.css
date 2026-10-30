@@ -1,0 +1,9 @@
+@font-face { font-family: 'Libre Caslon Display'; font-style: normal; font-weight: 400; font-display: swap; src: url(fonts/libre-caslon-display-latin-400-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Libre Caslon Text'; font-style: normal; font-weight: 400; font-display: swap; src: url(fonts/libre-caslon-text-latin-400-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Libre Caslon Text'; font-style: italic; font-weight: 400; font-display: swap; src: url(fonts/libre-caslon-text-latin-400-italic.woff2) format('woff2'); }
+@font-face { font-family: 'Libre Caslon Text'; font-style: normal; font-weight: 700; font-display: swap; src: url(fonts/libre-caslon-text-latin-700-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Hanken Grotesk'; font-style: normal; font-weight: 400; font-display: swap; src: url(fonts/hanken-grotesk-latin-400-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Hanken Grotesk'; font-style: normal; font-weight: 500; font-display: swap; src: url(fonts/hanken-grotesk-latin-500-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Hanken Grotesk'; font-style: normal; font-weight: 600; font-display: swap; src: url(fonts/hanken-grotesk-latin-600-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Frank Ruhl Libre'; font-style: normal; font-weight: 400; font-display: swap; src: url(fonts/frank-ruhl-libre-hebrew-400-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Frank Ruhl Libre'; font-style: normal; font-weight: 500; font-display: swap; src: url(fonts/frank-ruhl-libre-hebrew-500-normal.woff2) format('woff2'); }
