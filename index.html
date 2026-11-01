@@ -590,7 +590,7 @@ const CONFIG = {
   /* Waitlist. provider "kit": paste the Kit form id (the number in the form's share URL).
      provider "json": url of any endpoint that accepts POST JSON {email, ...} (e.g. Formspree).
      provider "form": url of a plain HTML form action (Brevo, MailerLite...); emailField = its email input name. */
-  waitlist: { provider: "", formId: "", url: "", emailField: "email" },
+  waitlist: { provider: "kit", formId: "10127866", url: "", emailField: "email" },
   foundersOpen: false,             /* keep false until the first public preview; true shows the Stripe tiers */
   stripeLinks: { 5: "", 10: "", 25: "", 50: "", 100: "", 500: "" },  /* one Stripe Payment Link per amount */
   contactEmail: "menudaapp@proton.me",
